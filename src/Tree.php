@@ -42,8 +42,9 @@ class Tree
 
     /**
      * @param array $data    The data for the tree (array of associative arrays)
-     * @param array $options [optional] Currently, the only supported key is "rootId"
-     *                       (ID of the root node)
+     * @param array $options 0 or more of the following keys: "rootId" (ID of the root node, defaults to 0), "id"
+     *                       (name of the ID field / array key, defaults to "id"), "parent", (name of the parent
+     *                       ID field / array key, defaults to "parent")
      *
      * @throws InvalidParentException
      * @throws \InvalidArgumentException
@@ -172,17 +173,14 @@ class Tree
         $children = [];
 
         // Create the root node
-        $this->nodes[$this->rootId] = $this->createNode([
-            'id'     => $this->rootId,
-            'parent' => null,
-        ]);
+        $this->nodes[$this->rootId] = $this->createNode($this->rootId, null, []);
 
         foreach ($data as $row) {
-            $this->nodes[$row['id']] = $this->createNode($row);
-            if (empty($children[$row['parent']])) {
-                $children[$row['parent']] = [$row['id']];
+            $this->nodes[$row[$this->idKey]] = $this->createNode($row[$this->idKey], $row[$this->parentKey], $row);
+            if (empty($children[$row[$this->parentKey]])) {
+                $children[$row[$this->parentKey]] = [$row[$this->idKey]];
             } else {
-                $children[$row['parent']][] = $row['id'];
+                $children[$row[$this->parentKey]][] = $row[$this->idKey];
             }
         }
 
@@ -227,12 +225,14 @@ class Tree
      *
      * Can be overridden by subclasses to use a Node subclass for nodes.
      *
-     * @param array $properties
+     * @param string|int $id
+     * @param string|int $parent
+     * @param array      $properties
      *
      * @return Node
      */
-    protected function createNode(array $properties): Node
+    protected function createNode($id, $parent, array $properties): Node
     {
-        return new Node($properties);
+        return new Node($id, $parent, $properties);
     }
 }

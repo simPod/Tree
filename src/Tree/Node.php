@@ -16,7 +16,7 @@ class Node
      *
      * @var array Associative array
      */
-    protected $properties = ['id' => null, 'parent' => 0];
+    protected $properties;
 
     /**
      * Reference to the parent node, in case of the root object: null.
@@ -33,11 +33,16 @@ class Node
     protected $children = [];
 
     /**
-     * @param array $properties Associative array of node properties
+     * @param string|int $id
+     * @param string|int $parent
+     * @param array      $properties Associative array of node properties
      */
-    public function __construct(array $properties)
+    public function __construct($id, $parent, array $properties = [])
     {
         $this->properties = array_change_key_case($properties, CASE_LOWER);
+        unset($this->properties['id'], $this->properties['parent']);
+        $this->properties['id'] = $id;
+        $this->properties['parent'] = $parent;
     }
 
     /**
