@@ -1,11 +1,11 @@
 language: php
 
 php:
-  - '7.0'
-  - '7.1'
+  - 7.0
+  - 7.1
 
-install:
-  - composer install --no-scripts --no-suggest --no-interaction
+before_script:
+  - composer install --no-scripts --no-suggest --no-interaction --prefer-source
 
 script:
-  - vendor/bin/phpunit
+  - ./vendor/bin/phpunit
