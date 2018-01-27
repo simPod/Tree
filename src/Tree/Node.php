@@ -102,7 +102,7 @@ class Node
      */
     public function getSiblings(): array
     {
-        return $this->_getSiblings(false);
+        return $this->getSiblingsGeneric(false);
     }
 
     /**
@@ -112,7 +112,7 @@ class Node
      */
     public function getSiblingsAndSelf(): array
     {
-        return $this->_getSiblings(true);
+        return $this->getSiblingsGeneric(true);
     }
 
     /**
@@ -120,7 +120,7 @@ class Node
      *
      * @return array
      */
-    private function _getSiblings(bool $includeSelf): array
+    protected function getSiblingsGeneric(bool $includeSelf): array
     {
         $siblings = [];
         foreach ($this->parent->getChildren() as $child) {
@@ -281,7 +281,7 @@ class Node
      */
     public function getDescendants(): array
     {
-        return $this->_getDescendants(false);
+        return $this->getDescendantsGeneric(false);
     }
 
     /**
@@ -294,7 +294,7 @@ class Node
      */
     public function getDescendantsAndSelf(): array
     {
-        return $this->_getDescendants(true);
+        return $this->getDescendantsGeneric(true);
     }
 
     /**
@@ -302,7 +302,7 @@ class Node
      *
      * @return array
      */
-    private function _getDescendants(bool $includeSelf): array
+    protected function getDescendantsGeneric(bool $includeSelf): array
     {
         $descendants = $includeSelf ? [$this] : [];
         foreach ($this->children as $childnode) {
@@ -329,7 +329,7 @@ class Node
      */
     public function getAncestors(): array
     {
-        return $this->_getAncestors(false);
+        return $this->getAncestorsGeneric(false);
     }
 
     /**
@@ -343,7 +343,7 @@ class Node
      */
     public function getAncestorsAndSelf(): array
     {
-        return $this->_getAncestors(true);
+        return $this->getAncestorsGeneric(true);
     }
 
     /**
@@ -351,7 +351,7 @@ class Node
      *
      * @return array
      */
-    private function _getAncestors(bool $includeSelf): array
+    protected function getAncestorsGeneric(bool $includeSelf): array
     {
         if (null === $this->parent) {
             return [];
@@ -359,7 +359,7 @@ class Node
 
         $ancestors = $includeSelf ? [$this] : [];
 
-        return array_merge($ancestors, $this->parent->_getAncestors(true));
+        return array_merge($ancestors, $this->parent->getAncestorsGeneric(true));
     }
 
     /**
