@@ -4,8 +4,5 @@ php:
   - 7.0
   - 7.1
 
-before_script:
-  - composer install --no-scripts --no-suggest --no-interaction --prefer-source
-
 script:
-  - ./vendor/bin/phpunit
+  - phpunit
