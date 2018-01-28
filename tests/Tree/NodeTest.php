@@ -143,6 +143,30 @@ class NodeTest extends TestCase
     /**
      * @test
      */
+    public function aNodeCanBeIteratedOverUsingForeach()
+    {
+        $childNode1 = new Node(10, null);
+        $childNode2 = new Node(20, null);
+        $childNode3 = new Node(30, null);
+        $grandChildNode1 = new Node(40, null);
+
+        $parent = new Node(333, null);
+        $childrenProperty = new \ReflectionProperty($parent, 'children');
+        $childrenProperty->setAccessible(true);
+
+        $childrenProperty->setValue($parent, [$childNode1, $childNode2, $childNode3]);
+        $childrenProperty->setValue($childNode2, [$grandChildNode1]);
+
+        $expectedOrder = [10, 20, 40, 30];
+        foreach ($parent as $childNode) {
+            $expectedNodeId = array_shift($expectedOrder);
+            static::assertSame($expectedNodeId, $childNode->getId());
+        }
+    }
+
+    /**
+     * @test
+     */
     public function theChildNodesCanBeRetrieved()
     {
         $node1 = new Node(10, null);

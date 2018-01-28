@@ -109,6 +109,21 @@ class TreeTest extends TestCase
     /**
      * @test
      */
+    public function theTreeCanBeRecursivelyIteratedUsingForeach()
+    {
+        $data = self::dataWithNumericKeys();
+        $tree = new Tree($data);
+
+        $expectedOrder = [5, 3, 4, 6, 1, 7, 15, 11, 21, 27, 12, 10, 20];
+        foreach ($tree as $node) {
+            $expectedNodeId = array_shift($expectedOrder);
+            static::assertSame($expectedNodeId, $node->getId());
+        }
+    }
+
+    /**
+     * @test
+     */
     public function allNodesCanBeRetrieved()
     {
         $data = self::dataWithNumericKeys();

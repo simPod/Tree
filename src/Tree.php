@@ -11,7 +11,7 @@ use BlueM\Tree\Node;
  * @author  Carsten Bluem <carsten@bluem.net>
  * @license http://www.opensource.org/licenses/bsd-license.php BSD 2-Clause License
  */
-class Tree implements \JsonSerializable
+class Tree implements \JsonSerializable, \Iterator
 {
     /**
      * API version (will always be in sync with first digit of release version number).
@@ -39,6 +39,16 @@ class Tree implements \JsonSerializable
      * @var Node[]
      */
     protected $nodes = [];
+
+    /**
+     * @var int
+     */
+    protected $iteratorIndex = 0;
+
+    /**
+     * @var Node
+     */
+    protected $iteratedNode;
 
     /**
      * @param array $data    The data for the tree (array of associative arrays)
@@ -247,5 +257,68 @@ class Tree implements \JsonSerializable
     protected function createNode($id, $parent, array $properties): Node
     {
         return new Node($id, $parent, $properties);
+    }
+
+    public function current(): Node
+    {
+        if ($this->iteratedNode) {
+            return $this->iteratedNode->current();
+        }
+
+        return $this->nodes[$this->rootId]->getChildAtIndex($this->iteratorIndex);
+    }
+
+    public function next()
+    {
+        if ($this->iteratedNode) {
+            $this->iteratedNode->next();
+            if ($this->iteratedNode->valid()) {
+                return;
+            }
+            // Not valid means: iterated child is at end, keep on going to
+            // continue in this node's level.
+        }
+
+        if (!$this->iteratedNode &&
+            $this->nodes[$this->rootId]->getChildAtIndex($this->iteratorIndex)->hasChildren()
+        ) {
+            // We can iterate over this child
+            $this->iteratedNode = $this->nodes[$this->rootId]->getChildAtIndex($this->iteratorIndex);
+            $this->iteratedNode->rewind();
+
+            return;
+        }
+
+        $this->iteratedNode = null;
+        ++$this->iteratorIndex;
+    }
+
+    public function key()
+    {
+        if ($this->iteratedNode) {
+            return $this->iteratedNode->key();
+        }
+
+        return $this->iteratorIndex;
+    }
+
+    public function valid()
+    {
+        if ($this->iteratedNode) {
+            return $this->iteratedNode->valid();
+        }
+
+        return $this->nodes[$this->rootId]->hasChildAtIndex($this->iteratorIndex);
+    }
+
+    public function rewind()
+    {
+        if ($this->iteratedNode) {
+            $this->iteratedNode->rewind();
+
+            return;
+        }
+
+        $this->iteratorIndex = 0;
     }
 }

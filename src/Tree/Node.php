@@ -8,7 +8,7 @@ namespace BlueM\Tree;
  * @author  Carsten Bluem <carsten@bluem.net>
  * @license http://www.opensource.org/licenses/bsd-license.php  BSD 2-Clause License
  */
-class Node implements \JsonSerializable
+class Node implements \JsonSerializable, \Iterator
 {
     /**
      * Indexed array of node properties. Must at least contain key
@@ -28,9 +28,19 @@ class Node implements \JsonSerializable
     /**
      * Indexed array of child nodes in correct order.
      *
-     * @var array
+     * @var Node[]
      */
     protected $children = [];
+
+    /**
+     * @var int
+     */
+    protected $iteratorIndex = 0;
+
+    /**
+     * @var Node
+     */
+    protected $iteratedChild;
 
     /**
      * @param string|int $id
@@ -140,6 +150,36 @@ class Node implements \JsonSerializable
     public function getChildren(): array
     {
         return $this->children;
+    }
+
+    /**
+     * Returns all direct children of this node.
+     *
+     * @param int $index
+     *
+     * @return Node
+     *
+     * @throws \OutOfRangeException
+     */
+    public function getChildAtIndex(int $index): Node
+    {
+        if ($this->hasChildAtIndex($index)) {
+            return $this->children[$index];
+        }
+
+        throw new \OutOfRangeException("No child node at index $index");
+    }
+
+    /**
+     * Returns whether or not this node has a child with the given (0-based) index
+     *
+     * @param int $index
+     *
+     * @return bool
+     */
+    public function hasChildAtIndex(int $index): bool
+    {
+        return !empty($this->children[$index]);
     }
 
     /**
@@ -388,5 +428,67 @@ class Node implements \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    public function current(): Node
+    {
+        if ($this->iteratedChild) {
+            return $this->iteratedChild->current();
+        }
+
+        return $this->children[$this->iteratorIndex];
+    }
+
+    public function next()
+    {
+        if ($this->iteratedChild) {
+            $this->iteratedChild->next();
+            if ($this->iteratedChild->valid()) {
+                return;
+            }
+            // Not valid means: iterated child is at end, keep on going to
+            // continue in this node's level.
+        }
+
+        if (!$this->iteratedChild &&
+            $this->getChildAtIndex($this->iteratorIndex)->hasChildren()
+        ) {
+            // We can iterate over this child
+            $this->iteratedChild = $this->getChildAtIndex($this->iteratorIndex);
+            $this->iteratedChild->rewind();
+
+            return;
+        }
+
+        $this->iteratedChild = null;
+        ++$this->iteratorIndex;
+    }
+
+    public function key()
+    {
+        if ($this->iteratedChild) {
+            return $this->iteratedChild->key();
+        }
+
+        return $this->iteratorIndex;
+    }
+
+    public function valid()
+    {
+        if ($this->iteratedChild) {
+            return $this->iteratedChild->valid();
+        }
+
+        return $this->hasChildAtIndex($this->iteratorIndex);
+    }
+
+    public function rewind()
+    {
+        if ($this->iteratedChild) {
+            $this->iteratedChild->rewind();
+            return;
+        }
+
+        $this->iteratorIndex = 0;
     }
 }
