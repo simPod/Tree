@@ -18,8 +18,8 @@
     "autoload": {
         "psr-4": {"BlueM\\": "src/"}
     },
-    "scripts": {
-        "test": "vendor/bin/phpunit"
+    "autoload-dev": {
+        "psr-4": {"BlueM\\Tests\\": "tests/"}
     },
     "require-dev": {
         "phpunit/phpunit": ">=8.0 || >=9.0"

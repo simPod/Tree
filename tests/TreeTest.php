@@ -4,10 +4,11 @@
 /* @noinspection PhpUndefinedMethodInspection */
 /* @noinspection ReturnTypeCanBeDeclaredInspection */
 
-namespace BlueM;
+namespace BlueM\Tests;
 
 use BlueM\Tree\Exception\InvalidDatatypeException;
 use BlueM\Tree\Exception\InvalidParentException;
+use BlueM\Tree;
 use BlueM\Tree\Node;
 use BlueM\Tree\Serializer\HierarchicalTreeJsonSerializer;
 use PHPUnit\Framework\TestCase;
