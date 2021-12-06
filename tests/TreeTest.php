@@ -227,7 +227,7 @@ class TreeTest extends TestCase
         static::assertCount(\count($data), $tree1JsonDecoded);
         foreach ($data as $nodeData) {
             ksort($nodeData);
-            // Note: static::assertContains() fails
+            // Note: static::assertContainsEquals() fails
             /* @noinspection PhpUnitTestsInspection */
             static::assertTrue(in_array($nodeData, $data));
         }
