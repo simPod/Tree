@@ -1,10 +1,15 @@
 [![GitHub Actions][GA Image]][GA Link]
+[![Code Coverage][Coverage Image]][CodeCov Link]
 
 ![Build status](https://github.com/BlueM/Tree/actions/workflows/php.yml/badge.svg)
 
 [GA Image]: https://github.com/simPod/Tree/workflows/CI/badge.svg
 
 [GA Link]: https://github.com/simPod/Tree/actions?query=workflow%3A%22CI%22+branch%3Amaster
+
+[Coverage Image]: https://codecov.io/gh/simPod/Tree/branch/master/graph/badge.svg
+
+[CodeCov Link]: https://codecov.io/gh/simPod/Tree/branch/master
 
 Overview
 ========
