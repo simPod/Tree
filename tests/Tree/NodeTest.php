@@ -4,8 +4,9 @@
 /* @noinspection PhpUndefinedMethodInspection */
 /* @noinspection ReturnTypeCanBeDeclaredInspection */
 
-namespace BlueM\Tree;
+namespace BlueM\Tree\Tests;
 
+use BlueM\Tree\Node;
 use PHPUnit\Framework\TestCase;
 
 /**
