@@ -1,4 +1,10 @@
+[![GitHub Actions][GA Image]][GA Link]
+
 ![Build status](https://github.com/BlueM/Tree/actions/workflows/php.yml/badge.svg)
+
+[GA Image]: https://github.com/simPod/Tree/workflows/CI/badge.svg
+
+[GA Link]: https://github.com/simPod/Tree/actions?query=workflow%3A%22CI%22+branch%3Amaster
 
 Overview
 ========
