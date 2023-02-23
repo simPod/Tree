@@ -37,7 +37,7 @@ class Node implements \JsonSerializable
      */
     public function __construct($id, $parent, array $properties = [])
     {
-        $this->properties = array_change_key_case($properties, CASE_LOWER);
+        $this->properties = $properties;
         unset($this->properties['id'], $this->properties['parent']);
         $this->properties['id'] = $id;
         $this->properties['parent'] = $parent;
@@ -149,9 +149,8 @@ class Node implements \JsonSerializable
      */
     public function get(string $name)
     {
-        $lowerName = strtolower($name);
-        if (isset($this->properties[$lowerName])) {
-            return $this->properties[$lowerName];
+        if (isset($this->properties[$name])) {
+            return $this->properties[$name];
         }
         throw new \InvalidArgumentException(
             "Undefined property: $name (Node ID: ".$this->properties['id'].')'
@@ -167,9 +166,8 @@ class Node implements \JsonSerializable
      */
     public function __call(string $name, $args)
     {
-        $lowerName = strtolower($name);
-        if (0 === strpos($lowerName, 'get')) {
-            $property = substr($lowerName, 3);
+        if (0 === strpos($name, 'get')) {
+            $property = substr($name, 3);
             if (array_key_exists($property, $this->properties)) {
                 return $this->properties[$property];
             }
@@ -177,30 +175,11 @@ class Node implements \JsonSerializable
         throw new \BadFunctionCallException("Invalid method $name() called");
     }
 
-    /**
-     * @throws \RuntimeException
-     *
-     * @return mixed
-     */
-    public function __get(string $name)
-    {
-        if ('parent' === $name || 'children' === $name) {
-            return $this->$name;
-        }
-        $lowerName = strtolower($name);
-        if (array_key_exists($lowerName, $this->properties)) {
-            return $this->properties[$lowerName];
-        }
-        throw new \RuntimeException(
-            "Undefined property: $name (Node ID: ".$this->properties['id'].')'
-        );
-    }
-
     public function __isset(string $name): bool
     {
         return 'parent' === $name ||
                'children' === $name ||
-               array_key_exists(strtolower($name), $this->properties);
+               array_key_exists($name, $this->properties);
     }
 
     /**

@@ -8,6 +8,7 @@ namespace BlueM\Tree\Tests;
 
 use BlueM\Tree\Node;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * @covers \BlueM\Tree\Node
@@ -236,12 +237,6 @@ class NodeTest extends TestCase
         static::assertEquals('value', $node->get('foobar'));
     }
 
-    public function testANodePropertyCanBeFetchedUsingMagicMethod()
-    {
-        $node = new Node(16, null, ['key' => 'value']);
-        static::assertEquals('value', $node->getKey());
-    }
-
     public function testTryingToGetANonExistentPropertyUsingMagicMethodThrowsAnException()
     {
         $this->expectException(\BadFunctionCallException::class);
@@ -256,41 +251,23 @@ class NodeTest extends TestCase
         $node = new Node(1, null, ['foo' => 'Foo', 'BAR' => 'Bar']);
 
         static::assertTrue(isset($node->foo));
-        static::assertTrue(isset($node->FOO));
-        static::assertTrue(isset($node->bar));
         static::assertTrue(isset($node->BAR));
         static::assertTrue(isset($node->children));
         static::assertTrue(isset($node->parent));
     }
 
-    public function testNodePropertiesAreHandledCaseInsensitively()
-    {
-        $node = new Node(1, null, ['foo' => 'Foo', 'BAR' => 'Bar']);
-
-        static::assertSame('Foo', $node->foo);
-        static::assertSame('Foo', $node->get('foo'));
-        static::assertSame('Foo', $node->getFoo());
-        static::assertSame('Bar', $node->bar);
-        static::assertSame('Bar', $node->get('bar'));
-        static::assertSame('Bar', $node->getBar());
-    }
-
-    public function testThePropertiesCanBeAccessUsingMagicProperties()
-    {
-        $node = new Node(1, null, ['foo' => 'Foo', 'BAR' => 'Bar']);
-
-        static::assertSame([], $node->children);
-        static::assertSame('Foo', $node->foo);
-        static::assertNull($node->parent);
-    }
-
     public function testAnExceptionIsThrownWhenAccessingAnInexistentMagicProperty()
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Undefined property');
-
         $node = new Node(1, null);
-        $node->nosuchproperty;
+        try {
+            $node->nosuchproperty;
+        } catch (Throwable $e) {
+            self::assertStringContainsString('Undefined property', $e->getMessage());
+
+            return;
+        }
+
+        self::fail();
     }
 
     public function testThePropertiesCanBeFetchedAsAnArray()
