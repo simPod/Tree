@@ -2,6 +2,8 @@
 
 namespace BlueM\Tree;
 
+use function array_key_exists;
+
 /**
  * Represents a node in a tree of nodes.
  *
@@ -149,7 +151,7 @@ class Node implements \JsonSerializable
      */
     public function get(string $name)
     {
-        if (isset($this->properties[$name])) {
+        if (array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
         throw new \InvalidArgumentException(

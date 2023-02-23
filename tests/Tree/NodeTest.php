@@ -224,8 +224,9 @@ class NodeTest extends TestCase
 
     public function testANodePropertyCanBeFetchedUsingMethodGet()
     {
-        $node = new Node(16, null, ['key' => 'value']);
+        $node = new Node(16, null, ['key' => 'value', 'key2' => null]);
         static::assertEquals('value', $node->get('key'));
+        static::assertNull($node->get('key2'));
     }
 
     public function testTryingToGetANonExistentPropertyUsingGetThrowsAnException()
