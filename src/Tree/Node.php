@@ -155,37 +155,14 @@ class Node implements \Stringable, \JsonSerializable
      */
     public function __call(string $name, mixed $args): mixed
     {
-        if (str_starts_with(strtolower($name), 'get')) {
+        if (str_starts_with($name, 'get')) {
             $property = substr($name, 3);
             if (array_key_exists($property, $this->properties)) {
                 return $this->properties[$property];
             }
-            $property = strtolower($property);
-            $lcProperties = array_change_key_case($this->properties);
-            if (array_key_exists($property, $lcProperties)) {
-                return $lcProperties[$property];
-            }
         }
 
         throw new \BadMethodCallException("Invalid method $name() called");
-    }
-
-    /**
-     * @throws \RuntimeException
-     */
-    public function __get(string $name): mixed
-    {
-        if ('parent' === $name || 'children' === $name) {
-            return $this->$name;
-        }
-
-        if (array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
-
-        throw new \RuntimeException(
-            "Undefined property: $name (Node ID: ".$this->properties['id'].')'
-        );
     }
 
     public function __isset(string $property): bool
