@@ -2,6 +2,8 @@
 
 namespace BlueM\Tree;
 
+use function array_key_exists;
+
 /**
  * Represents a node in a tree of nodes.
  *

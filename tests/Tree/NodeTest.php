@@ -374,10 +374,10 @@ class NodeTest extends TestCase
     #[TestDox('Properties / get(): A node’s custom properties can be fetched case-sensitively using get()')]
     public function getNodePropertyViaGet(): void
     {
-        $sut = new Node(1, ['foo' => 'foo', 'Foo' => 'Foo']);
+        $sut = new Node(1, ['foo' => 'foo', 'Foo' => null]);
 
         static::assertSame('foo', $sut->get('foo'));
-        static::assertSame('Foo', $sut->get('Foo'));
+        static::assertNull($node->get('Foo'));
     }
 
     #[Test]
