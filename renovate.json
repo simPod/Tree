@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "github>simPod/renovatebot-presets:php-lib"
+  ],
+  "forkProcessing": "enabled"
+}
