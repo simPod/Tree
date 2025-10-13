@@ -288,14 +288,6 @@ class NodeTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Children: Public property “children” can be used instead of getChildren()')]
-    public function getChildrenViaPublicProperty(): void
-    {
-        /* @phpstan-ignore-next-line */
-        static::assertSame([], (new Node(52))->children);
-    }
-
-    #[Test]
     #[TestDox("Children: get('children') can be used instead of getChildren()")]
     public function getChildrenViaGetMethod(): void
     {
@@ -343,41 +335,13 @@ class NodeTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Properties / Getter: A node’s properties can be fetched case-insensitively, but preferring exact case, if properties differ in case')]
-    public function getNodePropertyViaGetter(): void
-    {
-        $sut = new Node(16, ['foo' => 'foo', 'Foo' => 'Foo', 'BAR' => 'BAR']);
-
-        static::assertEquals(16, $sut->getId());
-        static::assertEquals(16, $sut->getID());
-        /* @phpstan-ignore-next-line */
-        static::assertSame('foo', $sut->getfoo());
-        /* @phpstan-ignore-next-line */
-        static::assertSame('Foo', $sut->getFoo());
-        /* @phpstan-ignore-next-line */
-        static::assertSame('BAR', $sut->getBar());
-    }
-
-    #[Test]
-    #[TestDox('Properties / Getter: An exception is thrown when calling a getter for a non-existent property')]
-    public function getNodeInexistentPropertyViaGetter(): void
-    {
-        $this->expectException(\BadMethodCallException::class);
-        $this->expectExceptionMessage('Invalid method getNonExistentProperty() called');
-
-        $sut = new Node(1, ['foo' => 'foo']);
-        /* @phpstan-ignore-next-line */
-        static::assertSame('bar', $sut->getNonExistentProperty());
-    }
-
-    #[Test]
     #[TestDox('Properties / get(): A node’s custom properties can be fetched case-sensitively using get()')]
     public function getNodePropertyViaGet(): void
     {
         $sut = new Node(1, ['foo' => 'foo', 'Foo' => null]);
 
         static::assertSame('foo', $sut->get('foo'));
-        static::assertNull($node->get('Foo'));
+        static::assertNull($sut->get('Foo'));
     }
 
     #[Test]
@@ -389,30 +353,6 @@ class NodeTest extends TestCase
 
         $sut = new Node(16, ['key' => 'value']);
         $sut->get('Key'); // Case must match
-    }
-
-    #[Test]
-    #[TestDox('Properties / Magic property: A property can be fetched case-sensitively as public property')]
-    public function getNodePropertyViaPublicProperty(): void
-    {
-        $sut = new Node(1, ['foo' => 'foo1', 'Foo' => 'foo2']);
-
-        /* @phpstan-ignore-next-line */
-        static::assertSame('foo1', $sut->foo);
-        /* @phpstan-ignore-next-line */
-        static::assertSame('foo2', $sut->Foo);
-    }
-
-    #[Test]
-    #[TestDox('Properties / Magic property: An exception is thrown when trying to fetch a non-existent public property')]
-    public function getNodeInexistentPropertyViaPublicProperty(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Undefined property');
-
-        $sut = new Node(1, ['foo' => 'Foo']);
-        /* @phpstan-ignore-next-line */
-        $sut->FOO;
     }
 
     #[Test]
@@ -450,8 +390,6 @@ class NodeTest extends TestCase
     {
         $sut = new Node(2, ['foo' => null]);
         static::assertNull($sut->get('foo'));
-        /* @noinspection PhpUndefinedMethodInspection */
-        static::assertNull($sut->getFoo());
         static::assertTrue($sut->__isset('foo'));
     }
 

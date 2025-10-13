@@ -152,21 +152,6 @@ class Node implements \Stringable, \JsonSerializable
         );
     }
 
-    /**
-     * @throws \BadMethodCallException
-     */
-    public function __call(string $name, mixed $args): mixed
-    {
-        if (str_starts_with($name, 'get')) {
-            $property = substr($name, 3);
-            if (array_key_exists($property, $this->properties)) {
-                return $this->properties[$property];
-            }
-        }
-
-        throw new \BadMethodCallException("Invalid method $name() called");
-    }
-
     public function __isset(string $property): bool
     {
         return 'parent' === $property
